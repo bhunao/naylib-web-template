@@ -15,26 +15,40 @@ makeSystem "orbit", [Pos, OrbitPos, Vel]:
     orbitPos.angle += vel.speed
     discard
 
-makeSystem "keyInput", [Player, Vel]:
+makeSystem "keyInput", [Player, Vel, Pos, OrbitPos]:
   all:
-    var value: float
-    if value == 0:
-      value = 0.0
-    elif value < 0.0:
-      value = -0.5
-    elif value > 0.0:
-      value = 0.5
+    if isKeyDown(A) and vel.speed < 3:
+      vel.speed += 0.1
+    elif vel.speed > 0:
+      vel.speed += -0.01
 
-    vel.speed -= value
-    vel.speed = min(vel.speed, 3)
-    vel.speed = max(vel.speed, -3)
+    if isKeyDown(D) and vel.speed > -3:
+      vel.speed += -0.1
+    elif vel.speed < 0:
+      vel.speed += 0.01
 
-    if isKeyDown(A):
-      vel.speed += 0.5
-    if isKeyDown(D):
-      vel.speed += -0.5
+    if isKeyDown(Space):
+      var 
+        newX = orbitPos.distance * cos degToRad orbitPos.angle
+        newY = orbitPos.distance * sin degToRad orbitPos.angle
+      newX = orbitPos.centerX + newX
+      newY = orbitPos.centerY + newY
 
-makeSystem "draw", [Pos, Circle]:
+      discard newEntityWith(
+        Pos(x: newX, y: newY),
+        Vel(speed: 6.0, angle: orbitPos.angle - 180),
+        Circle(r:5, color: Blue),
+        Projectile(),
+      )
+
+makeSystem "handleProjectiles", [Projectile, Pos]:
+  all:
+    if pos.x > getScreenWidth() or pos.x < 0:
+      sys.deleteList.add entity
+    if pos.y > getScreenHeight() or pos.y < 0:
+      sys.deleteList.add entity
+
+makeSystem "drawCircle", [Pos, Circle]:
   all:
     drawCircle(pos.x.int32, pos.y.int32, circle.r, circle.color)
 

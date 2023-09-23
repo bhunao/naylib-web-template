@@ -10,8 +10,6 @@ const
 
 proc half(n: int): float = n / 2.0
 
-
-# Compose Pos and Vel to trigger "move".
 let
   player = newEntityWith(
     Pos(x: 0, y: 0),
@@ -19,12 +17,13 @@ let
     OrbitPos(
         centerX: 0,
         centerY: 0,
-        distance: 200,
+        distance: 250,
         angle: 0
       ),
-    Circle(r:50, color: Blue),
+    Circle(r:15, color: Blue),
     Player(),
   )
+
   orbitador = newEntityWith(
     Circle(r:10, color: Magenta),
     Pos(x: WIDTH.half, y: HEIGHT.half),
@@ -37,8 +36,59 @@ let
       ),
     )
 
+  God = newEntityWith(
+    Circle(r:50, color: Gold),
+    Pos(x: WIDTH.half, y: HEIGHT.half),
+    Vel(speed: 3.0, angle: 90.0),
+    OrbitPos(
+        centerX: WIDTH.half,
+        centerY: HEIGHT.half,
+        distance: 0,
+        angle: 0
+      ),
+    )
+
 proc initGame =
-  discard
+  for i in countup(0, 360, 360 div 36):
+    discard newEntityWith(
+      Circle(r:5, color: Red),
+      Pos(x: WIDTH.half, y: HEIGHT.half),
+      Vel(speed: 1.0, angle: 0.0),
+      OrbitPos(
+          centerX: WIDTH.half,
+          centerY: HEIGHT.half,
+          distance: 60,
+          angle: i.float
+        ),
+      )
+
+  for i in countup(0, 360, 360 div 30):
+    discard newEntityWith(
+      Circle(r:5, color: Purple),
+      Pos(x: WIDTH.half, y: HEIGHT.half),
+      Vel(speed: 1.0, angle: 0.0),
+      OrbitPos(
+          centerX: WIDTH.half,
+          centerY: HEIGHT.half,
+          distance: 75,
+          angle: i.float
+        ),
+      )
+
+  for i in countup(0, 360, 360 div 20):
+    discard newEntityWith(
+      Circle(r:5, color: Green),
+      Pos(x: WIDTH.half, y: HEIGHT.half),
+      Vel(speed: 1.0, angle: 0.0),
+      OrbitPos(
+          centerX: WIDTH.half,
+          centerY: HEIGHT.half,
+          distance: 90,
+          angle: i.float
+        ),
+      )
+
+
 
 proc updateGame =
   var 
@@ -70,7 +120,7 @@ proc updateDrawFrame {.cdecl.} =
 
 
 proc main =
-  setConfigFlags(WindowResizable.flags)
+  # setConfigFlags(WindowResizable.flags)
   initWindow(WIDTH, HEIGHT, "Naylib Web Template")
   setWindowMinSize(320, 240)
   try:
