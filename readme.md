@@ -1,7 +1,7 @@
 # Naylib + Polymorph
 
 - Naylib for Graphics library
-- Polymorph as ECS
+- yeacs as ECS
 
 ## build
 
