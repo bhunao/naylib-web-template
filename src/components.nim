@@ -1,34 +1,20 @@
 import raylib
-import polymorph
 
 
-register defaultCompOpts:
-  type
-    Origin {.notComponent.} = enum
-      MID, TOPLEFT
+type
+  Player* = object
+  Enemy* = object
+  KeyboardInput* = object
 
-    Enemy* = object
-    Player* = object
-    Projectile* = object
+  Square* = object
+    w*, r*: float
 
-    Pos* = object
-      x*, y*: float
+  Circle* = object
+    r*: float
+    c*: Color = Red
 
-    Vel* = object
-      speed*, angle*: float
+  Position* = object
+    x*, y*: float
 
-    Circle* = object
-      r*: float
-      color*: Color
-
-    OrbitPos* = object
-      centerX*, centerY*: float
-      distance*, angle*: float
-
-    Sprite* = object
-      texture*: Texture
-      source*: Rectangle
-      dest*: Rectangle
-      origin*: Vector2
-      rotation*: float
-      angle*: float
+  PolarVelocity* = object
+    speed*, angle*: float = 1

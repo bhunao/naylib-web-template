@@ -1,111 +1,41 @@
+import raylib
 import std/math
-import raylib, std/lenientops
-import polymorph
-import systems
-import components
+import std/lenientops
+
+import ./yeacs
+import ./components
+import ./systems/move
+import ./systems/draw
+import ./systems/keyboard
 
 const
   WIDTH = 800
   HEIGHT = 600
 
-proc half(n: int): float = n / 2.0
+var 
+  world = World()
+  firstEnt: Entity
+  ticks = 0
 
-let
-  player = newEntityWith(
-    Pos(x: 0, y: 0),
-    Vel(speed: 1.0, angle: 90.0),
-    OrbitPos(
-        centerX: 0,
-        centerY: 0,
-        distance: 250,
-        angle: 0
-      ),
-    Circle(r:15, color: Blue),
-    Player(),
-  )
-
-  orbitador = newEntityWith(
-    Circle(r:10, color: Magenta),
-    Pos(x: WIDTH.half, y: HEIGHT.half),
-    Vel(speed: 3.0, angle: 90.0),
-    OrbitPos(
-        centerX: WIDTH.half,
-        centerY: HEIGHT.half,
-        distance: 200,
-        angle: 0
-      ),
-    )
-
-  God = newEntityWith(
-    Circle(r:50, color: Gold),
-    Pos(x: WIDTH.half, y: HEIGHT.half),
-    Vel(speed: 3.0, angle: 90.0),
-    OrbitPos(
-        centerX: WIDTH.half,
-        centerY: HEIGHT.half,
-        distance: 0,
-        angle: 0
-      ),
-    )
+proc run() =
+  moveSystem(world, WIDTH, HEIGHT)
+  drawFrame(world)
+  keyboardMovePolarWASD(world)
+  inc ticks
 
 proc initGame =
-  for i in countup(0, 360, 360 div 36):
-    discard newEntityWith(
-      Circle(r:5, color: Red),
-      Pos(x: WIDTH.half, y: HEIGHT.half),
-      Vel(speed: 1.0, angle: 0.0),
-      OrbitPos(
-          centerX: WIDTH.half,
-          centerY: HEIGHT.half,
-          distance: 60,
-          angle: i.float
-        ),
-      )
-
-  for i in countup(0, 360, 360 div 30):
-    discard newEntityWith(
-      Circle(r:5, color: Purple),
-      Pos(x: WIDTH.half, y: HEIGHT.half),
-      Vel(speed: 1.0, angle: 0.0),
-      OrbitPos(
-          centerX: WIDTH.half,
-          centerY: HEIGHT.half,
-          distance: 75,
-          angle: i.float
-        ),
-      )
-
-  for i in countup(0, 360, 360 div 20):
-    discard newEntityWith(
-      Circle(r:5, color: Green),
-      Pos(x: WIDTH.half, y: HEIGHT.half),
-      Vel(speed: 1.0, angle: 0.0),
-      OrbitPos(
-          centerX: WIDTH.half,
-          centerY: HEIGHT.half,
-          distance: 90,
-          angle: i.float
-        ),
-      )
-
-
-
-proc updateGame =
-  var 
-    orbit = orbitador.fetch OrbitPos
-    player = player.fetch OrbitPos
-
-  orbit.centerX = getScreenWidth().half
-  orbit.centerY = getScreenHeight().half
-
-  player.centerX = getScreenWidth().half
-  player.centerY = getScreenHeight().half
-
-  runSystems()
+  var ent = world.addEntity (
+      Position(x: 150.0, y: 150.0),
+      PolarVelocity(speed: 1.0, angle: 0.0),
+      Circle(r: 150),
+      KeyboardInput()
+    )
+  world.addComponent(ent, true)
 
 proc drawGame =
   beginDrawing()
   clearBackground(RayWhite)
+  run()
 
   endDrawing()
 
@@ -114,11 +44,6 @@ proc unloadGame =
   # TODO: Unload all dynamic loaded data (textures, sounds, models...)
   discard
 
-proc updateDrawFrame {.cdecl.} =
-  updateGame()
-  drawGame()
-
-
 proc main =
   # setConfigFlags(WindowResizable.flags)
   initWindow(WIDTH, HEIGHT, "Naylib Web Template")
@@ -126,11 +51,11 @@ proc main =
   try:
     initGame()
     when defined(emscripten):
-      emscriptenSetMainLoop(updateDrawFrame, 60, 1)
+      emscriptenSetMainLoop(drawGame, 60, 1)
     else:
       setTargetFPS(60)
       while not windowShouldClose():
-        updateDrawFrame()
+        drawGame()
     unloadGame()
   finally:
     closeWindow()
