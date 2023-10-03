@@ -4,9 +4,12 @@ import std/lenientops
 
 import ./yeacs
 import ./components
+import ./sprites
+
 import ./systems/move
 import ./systems/draw
 import ./systems/keyboard
+import ./systems/collission
 
 const
   WIDTH = 800
@@ -21,16 +24,31 @@ proc run() =
   moveSystem(world, WIDTH, HEIGHT)
   drawFrame(world)
   keyboardMovePolarWASD(world)
+  collissionSystem(world)
   inc ticks
 
 proc initGame =
-  var ent = world.addEntity (
+  var 
+    ent1 = world.addEntity (
       Position(x: 150.0, y: 150.0),
       PolarVelocity(speed: 1.0, angle: 0.0),
       Circle(r: 150),
-      KeyboardInput()
+      Enemy()
     )
-  world.addComponent(ent, true)
+    sprite = Sprite(
+        texture: SPACESHIP,
+        rotation: 0,
+        scale: 1,
+        color: Gold
+      )
+    ent2 = world.addEntity (
+      Position(x: 250.0, y: 250.0),
+      PolarVelocity(speed: 2.0, angle: 0.0),
+      Circle(r: 50, c: Magenta),
+      KeyboardInput(),
+      Player(),
+      sprite
+    )
 
 proc drawGame =
   beginDrawing()

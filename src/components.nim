@@ -1,11 +1,21 @@
 import raylib
+import ./sprites
 
 
 type
+  # flags
   Player* = object
   Enemy* = object
   KeyboardInput* = object
 
+  # movement
+  Position* = object
+    x*, y*: float
+
+  PolarVelocity* = object
+    speed*, angle*: float = 1
+
+  # --
   Square* = object
     w*, r*: float
 
@@ -13,8 +23,10 @@ type
     r*: float
     c*: Color = Red
 
-  Position* = object
-    x*, y*: float
+  Sprite* = object
+    texture*: Sprites
+    rotation*: float 
+    scale*: float 
+    color*: Color
 
-  PolarVelocity* = object
-    speed*, angle*: float = 1
+
