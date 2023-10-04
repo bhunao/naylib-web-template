@@ -21,10 +21,13 @@ var
   ticks = 0
 
 proc run() =
-  moveSystem(world, WIDTH, HEIGHT)
   drawFrame(world)
-  keyboardMovePolarWASD(world)
+
+  moveSystem(world, WIDTH, HEIGHT)
   collissionSystem(world)
+
+  keyboardMoveCartesianWASD(world)
+  keyboardAttackSpace(world)
   inc ticks
 
 proc initGame =
@@ -35,19 +38,12 @@ proc initGame =
       Circle(r: 150),
       Enemy()
     )
-    sprite = Sprite(
-        texture: SPACESHIP,
-        rotation: 0,
-        scale: 1,
-        color: Gold
-      )
     ent2 = world.addEntity (
       Position(x: 250.0, y: 250.0),
-      PolarVelocity(speed: 2.0, angle: 0.0),
-      Circle(r: 50, c: Magenta),
+      CartesianVelocity(x: 0, y: 0),
+      Square(w: 50, h: 100, c: Gold),
       KeyboardInput(),
       Player(),
-      sprite
     )
 
 proc drawGame =
