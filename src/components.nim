@@ -6,6 +6,7 @@ type
   # flags
   Player* = object
   Enemy* = object
+  Projectile* = object
   KeyboardInput* = object
 
   # movement
@@ -13,11 +14,15 @@ type
     x*, y*: float
 
   PolarVelocity* = object
-    speed*, angle*: float = 1
+    speed*, angle*: float = 0
+
+  CartesianVelocity* = object
+    x*, y*: float = 0
 
   # --
   Square* = object
-    w*, r*: float
+    w*, h*: float
+    c*: Color = Green
 
   Circle* = object
     r*: float
