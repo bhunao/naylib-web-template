@@ -1,19 +1,47 @@
-import raylib
-import std/lenientops
+import
+  sdl2_nim/sdl,
+  sdl2_nim/sdl_image as img,
+  sdl2_nim/sdl_gfx_primitives as gfx,
+  sdl2_nim/sdl_gfx_primitives_font as font
 
-import ../components
-import ../yeacs
-import ../sprites
+
+import 
+  ../components,
+  ../yeacs
 
 
-proc drawFrame*(world: var World) =
-  beginDrawing()
-  clearBackground(RayWhite)
-
+proc drawFrame*(world: var World, render: sdl.Renderer) =
   for (pos, circle) in world.foreach (Position, Circle):
-    drawCircle(pos.x.int32, pos.y.int32, circle.r, circle.c)
+    var
+      x = pos.x.int16
+      y = pos.y.int16
+      rad = circle.r.int16
+
+    discard render.
+      filledCircleRGBA(x=x, y=y, rad=rad,
+        0.uint8, 255.uint8, 2.uint8, 255.uint8
+      )
 
   for (pos, sqr) in world.foreach (Position, Square):
-    drawRectangle(pos.x.int32, pos.y.int32, sqr.w.int32, sqr.h.int32, sqr.c)
+    var
+      x1 = pos.x.int16
+      y1 = pos.y.int16
+      x2 = pos.x.int16 + sqr.w.int16
+      y2 = pos.y.int16 + sqr.w.int16
 
-  endDrawing()
+    discard render.boxRGBA(
+      x1 = x1, y1 = y1, x2 = x2, y2 = y2,
+        0.uint8, 255.uint8, 255.uint8, 255.uint8
+      )
+
+  for (pos, img) in world.foreach (Position, Image):
+    var
+      x = pos.x.int32
+      y = pos.y.int32
+      w = img.w.int32
+      h = img.h.int32
+      rect = sdl.Rect(x: x, y: y, w: w, h: h)
+
+    echo render.renderCopy(img.texture, nil, addr(rect))
+    echo pos.x, pos.y
+

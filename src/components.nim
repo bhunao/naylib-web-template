@@ -1,5 +1,4 @@
-import raylib
-import ./sprites
+import sdl2_nim/sdl, sdl2_nim/sdl_image as img
 
 
 type
@@ -22,16 +21,11 @@ type
   # --
   Square* = object
     w*, h*: float
-    c*: Color = Green
+    # c*: Color = Green
 
   Circle* = object
     r*: float
-    c*: Color = Red
 
-  Sprite* = object
-    texture*: Sprites
-    rotation*: float 
-    scale*: float 
-    color*: Color
-
-
+  Image* = object
+    texture*: sdl.Texture
+    w*, h*: int
